@@ -24,8 +24,19 @@ class Character:
 
 
 class Player(Character):
-    def __init__(self, name, hp, power):
+    def __init__(self, name, hp, power, mp, magic_power):
+        self.max_mp = mp
+        self.mp = mp
+        self.magic_power = magic_power
         super().__init__(name, hp, power)
+
+    def magic_attack(self, other):
+        self.mp -= 2
+        damage = random.randint(self.magic_power - 2, self.magic_power + 2)
+        other.hp = max(other.hp - damage, 0)
+        print(f"{self.name}의 마법! {other.name}에게 {damage}의 데미지를 입혔습니다.")
+        if other.hp == 0:
+            print(f"{other.name}이(가) 쓰러졌습니다.")
 
 
 class Monster(Character):
@@ -35,7 +46,7 @@ class Monster(Character):
 
 def create_player():
     print("플레이어 생성")
-    return Player(input("플레이어 이름:"), 100, 10)
+    return Player(input("플레이어 이름:"), 100, 10, 10, 20)
 
 
 def create_monster():
@@ -50,11 +61,15 @@ turns = 0
 
 while (True):
     turns += 1
-    print(f"[{turns}턴] 플레이어 체력:{player.hp}/{player.max_hp} 몬스터 체력:{monster.hp}/{monster.max_hp}")
+    print(f"[{turns}턴] 플레이어 체력:{player.hp}/{player.max_hp} 마나:{player.mp}/{player.max_mp} / 몬스터 체력:{monster.hp}/{monster.max_hp}")
 
     print("<당신의 차례>")
-    input("당신의 행동 (1.일반공격):")
-    player.attack(monster)
+    act = int(input("당신의 행동 (1.일반공격 2.마법공격):"))
+    if act == 1:
+        player.attack(monster)
+    elif act == 2:
+        player.magic_attack(monster)
+
     if monster.hp == 0:
         print("당신이 이겼습니다.")
         break
