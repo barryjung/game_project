@@ -35,12 +35,12 @@ class Monster(Character):
 
 def create_player():
     print("플레이어 생성")
-    return Player(input("플레이어 이름:"), 10, 10)
+    return Player(input("플레이어 이름:"), 100, 10)
 
 
 def create_monster():
     print("몬스터 생성")
-    return Monster("슬라임", 10, 10)
+    return Monster("슬라임", 100, 10)
 
 
 player = create_player()
@@ -52,5 +52,21 @@ while (True):
     turns += 1
     print(f"[{turns}턴] 플레이어 체력:{player.hp}/{player.max_hp} 몬스터 체력:{monster.hp}/{monster.max_hp}")
 
-    if turns == 3:
+    print("<당신의 차례>")
+    input("당신의 행동 (1.일반공격):")
+    player.attack(monster)
+    if monster.hp == 0:
+        print("당신이 이겼습니다.")
         break
+
+    print("<상대의 차례>")
+    monster.attack(player)
+    if player.hp == 0:
+        print("상대가 이겼습니다.")
+        break
+
+    player.show_status()
+    monster.show_status()
+    print("턴종료\n")
+
+print("게임 종료")
