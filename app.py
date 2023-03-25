@@ -1,10 +1,9 @@
 import random
+import time
 
 
 class Character:
-    """
-    모든 캐릭터의 모체가 되는 클래스
-    """
+    # 모든 캐릭터의 모체가 되는 클래스
 
     def __init__(self, name, hp, power):
         self.name = name
@@ -38,6 +37,9 @@ class Player(Character):
         if other.hp == 0:
             print(f"{other.name}이(가) 쓰러졌습니다.")
 
+    def show_status(self):
+        print(f"{self.name}의 상태: HP {self.hp}/{self.max_hp} MP {self.mp}/{self.max_mp}")
+
 
 class Monster(Character):
     def __init__(self, name, hp, power):
@@ -45,29 +47,43 @@ class Monster(Character):
 
 
 def create_player():
-    print("플레이어 생성")
-    return Player(input("플레이어 이름:"), 100, 10, 10, 20)
+    return Player(input("결투장에 올라서는 (플레이어 이름):"), 100, 10, 10, 20)
 
 
 def create_monster():
-    print("몬스터 생성")
-    return Monster("슬라임", 100, 10)
+    monster_doc = [
+        ["슬라임", 50, 10],
+        ["고블린", 100, 10],
+        ["오우거", 150, 10]
+    ]
+    monster_select = random.randint(1, 3)
+    name = monster_doc[monster_select][0]
+    hp = monster_doc[monster_select][1]
+    power = monster_doc[monster_select][2]
+    print(f"그 상대는 {name}!\n")
+    return Monster(name, hp, power)
 
 
+# 시작부분
+print("게임 시작")
 player = create_player()
 monster = create_monster()
 turns = 0
+time.sleep(1)
 
 
+# 게임진행
 while (True):
     turns += 1
-    print(f"[{turns}턴] 플레이어 체력:{player.hp}/{player.max_hp} 마나:{player.mp}/{player.max_mp} / 몬스터 체력:{monster.hp}/{monster.max_hp}")
+    print(f"[{turns}턴]")
+    player.show_status()
+    monster.show_status()
 
     print("<당신의 차례>")
-    act = int(input("당신의 행동 (1.일반공격 2.마법공격):"))
-    if act == 1:
+    act_select = int(input("당신의 행동 1.일반공격 2.마법공격(mp 2소모):"))
+    if act_select == 1:
         player.attack(monster)
-    elif act == 2:
+    elif act_select == 2:
         player.magic_attack(monster)
 
     if monster.hp == 0:
@@ -80,8 +96,9 @@ while (True):
         print("상대가 이겼습니다.")
         break
 
-    player.show_status()
-    monster.show_status()
-    print("턴종료\n")
+    print(f"[{turns}턴종료]\n")
+    time.sleep(1)
 
+
+# 끝부분
 print("게임 종료")
